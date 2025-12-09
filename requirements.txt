@@ -1,0 +1,28 @@
+# Hybrid Trading System Dependencies
+
+# Deep Learning
+tensorflow>=2.10
+keras>=3.0
+
+# Reinforcement Learning
+stable-baselines3>=2.0
+gymnasium>=0.29
+
+# Data Processing
+pandas>=2.0
+numpy>=1.24
+yfinance>=0.2.30
+
+# Technical Analysis
+ta>=0.10
+
+# PyTorch (for GPU detection)
+torch>=2.0
+
+# Visualization
+matplotlib>=3.7
+
+# Utilities
+tqdm>=4.65
+psutil>=5.9
+scikit-learn>=1.3

@@ -1,0 +1,37 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual Env
+venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+
+# Project Specific - Logs & Runs
+daily_runs/
+daily_runs_v*_*/
+daily_runs_*/
+tensorboard_logs/
+logs/
+.gemini/
+.agent/
+
+# Cache & Temporary Data
+*.pkl
+*.log
+data/processed/
+cache/
+# Keep raw data if it's small and essential, but ignore large datasets
+# !twii_data_from_2000_01_01.csv (Actually, it will be included by default unless ignored)
+
+# Report & Results (Optional: usually we don't commit test results, but user might want them. 
+# I'll ignore specific heavy folders if needed, but for now allow results/ unless they are huge)
+# data/raw/
+# If raw data is large, ignore it. But twii...csv is 300KB.
+
+# Checkpoints
+saved_models_*/
