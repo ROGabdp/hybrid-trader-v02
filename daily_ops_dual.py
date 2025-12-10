@@ -49,8 +49,8 @@ PROJECT_PATH = os.path.dirname(os.path.abspath(__file__))
 DAILY_RUNS_PATH = os.path.join(PROJECT_PATH, 'daily_runs')
 
 # RL 模型路徑 (V3 vs V4)
-STRATEGY_A_PATH = os.path.join(PROJECT_PATH, 'models_hybrid_v3')  # V3 (高步數微調)
-STRATEGY_B_PATH = os.path.join(PROJECT_PATH, 'models_hybrid_v4')  # V4 (輕量化微調)
+STRATEGY_A_PATH = os.path.join(PROJECT_PATH, 'models_hybrid_v3')  # V3 (輕量化微調)
+STRATEGY_B_PATH = os.path.join(PROJECT_PATH, 'models_hybrid_v4')  # V4 (標準完整微調)
 
 # LSTM 訓練腳本名稱 (必須存在於同一目錄下)
 SCRIPT_5D = "twii_model_registry_5d.py"
@@ -365,11 +365,11 @@ def dual_inference(workspace: dict, df: pd.DataFrame) -> dict:
             import traceback
             traceback.print_exc()
 
-    # 執行 A (V3)
-    run_strategy("V3 (Fine-tune 1M)", STRATEGY_A_PATH, 'A')
+    # 執行 A (V3 - 輕量化)
+    run_strategy("V3 (Lightweight 200K)", STRATEGY_A_PATH, 'A')
     
-    # 執行 B (V4)
-    run_strategy("V4 (Fine-tune 200K)", STRATEGY_B_PATH, 'B')
+    # 執行 B (V4 - 標準)
+    run_strategy("V4 (Standard 1M)", STRATEGY_B_PATH, 'B')
     
     return results
 

@@ -333,10 +333,10 @@ def add_lstm_features(df: pd.DataFrame, ticker: str = "Unknown") -> pd.DataFrame
                 if close_prices[idx] > 0:
                     pred_5d[idx] = (mc_mean[j] - close_prices[idx]) / close_prices[idx]
                     cv = mc_std[j] / mc_mean[j] if mc_mean[j] > 0 else 0.1
-                    # [v2.3] 收緊信心度門檻 (適應 Dropout=0.05)
-                    # threshold_high = 0.0005 (CV <= 0.05% 為滿分 1.0)
-                    # threshold_low = 0.0020 (CV >= 0.20% 為零分 0.0)
-                    score = 1.0 - (cv - 0.0005) / (0.0020 - 0.0005)
+                    # [v2.5] 重新校準信心度門檻 (基於實際 CV 分佈)
+                    # threshold_high = 0.001 (CV <= 0.1% 為滿分 1.0)
+                    # threshold_low = 0.010 (CV >= 1.0% 為零分 0.0)
+                    score = 1.0 - (cv - 0.001) / (0.010 - 0.001)
                     conf_5d[idx] = np.clip(score, 0.0, 1.0)
     except:
         pass
@@ -628,13 +628,18 @@ def run_pretraining(train_data: dict, models_path: str, device: str):
 # =============================================================================
 # 6. Fine-tuning 流程 (Transfer Learning)
 # =============================================================================
-def run_finetuning(twii_finetune_data: dict, twii_eval_data: dict, models_path: str, device: str):
+def run_finetuning(twii_finetune_data: dict, twii_eval_data: dict, models_path: str, device: str,
+                   finetune_buy_steps: int = 1_000_000, finetune_sell_steps: int = 300_000):
     """
     針對 ^TWII 進行微調 (含 TensorBoard 日誌記錄)
     - 載入預訓練權重
     - 使用較低的 Learning Rate (1e-5)
-    - 較短的訓練步數
+    - 可自訂訓練步數
     - EvalCallback 監控驗證集表現
+    
+    Args:
+        finetune_buy_steps: Buy Agent 微調步數 (default: 1,000,000)
+        finetune_sell_steps: Sell Agent 微調步數 (default: 300,000)
     """
     print("\n" + "=" * 60)
     print("🎯 Phase 4: Fine-tuning for ^TWII (with TensorBoard)")
@@ -688,8 +693,8 @@ def run_finetuning(twii_finetune_data: dict, twii_eval_data: dict, models_path: 
                      deterministic=True)
     ])
     
-    print(f"[Fine-tune] Training Buy Agent for 1,000,000 steps (LR: {finetune_params['learning_rate']})")
-    buy_model.learn(total_timesteps=1_000_000, callback=buy_callbacks, 
+    print(f"[Fine-tune] Training Buy Agent for {finetune_buy_steps:,} steps (LR: {finetune_params['learning_rate']})")
+    buy_model.learn(total_timesteps=finetune_buy_steps, callback=buy_callbacks, 
                     tb_log_name="buy_finetune", reset_num_timesteps=False)
     
     buy_final_path = os.path.join(models_path, "ppo_buy_twii_final")
@@ -724,8 +729,8 @@ def run_finetuning(twii_finetune_data: dict, twii_eval_data: dict, models_path: 
                      deterministic=True)
     ])
     
-    print(f"[Fine-tune] Training Sell Agent for 300,000 steps (LR: {finetune_params['learning_rate']})")
-    sell_model.learn(total_timesteps=300_000, callback=sell_callbacks, 
+    print(f"[Fine-tune] Training Sell Agent for {finetune_sell_steps:,} steps (LR: {finetune_params['learning_rate']})")
+    sell_model.learn(total_timesteps=finetune_sell_steps, callback=sell_callbacks, 
                      tb_log_name="sell_finetune", reset_num_timesteps=False)
     
     sell_final_path = os.path.join(models_path, "ppo_sell_twii_final")
