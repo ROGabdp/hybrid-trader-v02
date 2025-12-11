@@ -45,7 +45,7 @@ V4_MODELS_PATH = os.path.join(PROJECT_PATH, 'models_hybrid_v4')
 RESULTS_PATH = os.path.join(PROJECT_PATH, 'results_backtest_v4_no_filter')
 CACHE_DIR = os.path.join(PROJECT_PATH, 'data', 'processed')
 
-DEFAULT_START_DATE = '2024-01-01'  # 預設回測起始日
+DEFAULT_START_DATE = '2023-01-01'  # 預設回測起始日
 DEFAULT_END_DATE = None  # None 表示到最新資料
 INITIAL_CAPITAL = 1_000_000
 

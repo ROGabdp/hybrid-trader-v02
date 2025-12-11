@@ -103,9 +103,13 @@ def setup_environment():
 # =============================================================================
 # 1. 資料下載
 # =============================================================================
-def _load_local_twii_data(start_date: str = "2000-01-01") -> pd.DataFrame:
+def _load_local_twii_data(start_date: str = "2000-01-01", end_date: str = None) -> pd.DataFrame:
     """
     載入本地 TWII CSV 資料 (含自動更新邏輯)
+    
+    Args:
+        start_date: 資料起始日期 (YYYY-MM-DD)
+        end_date: 資料結束日期 (YYYY-MM-DD)，若為 None 則取到最新
     """
     from datetime import date
     import subprocess
@@ -161,36 +165,54 @@ def _load_local_twii_data(start_date: str = "2000-01-01") -> pd.DataFrame:
         'volume': 'Volume'  # 單位：億元
     })
     
-    # 篩選日期
+    # 篩選日期範圍
     start_dt = pd.Timestamp(start_date)
     df = df[df.index >= start_dt]
     
-    print(f"  ✅ ^TWII (Local): {len(df)} 筆 ({df.index[0].date()} ~ {df.index[-1].date()})")
+    # [新增] 若指定 end_date，則過濾掉之後的資料
+    if end_date is not None:
+        end_dt = pd.Timestamp(end_date)
+        df = df[df.index < end_dt]
+        print(f"  ✅ ^TWII (Local, 截止 {end_date}): {len(df)} 筆 ({df.index[0].date()} ~ {df.index[-1].date()})")
+    else:
+        print(f"  ✅ ^TWII (Local): {len(df)} 筆 ({df.index[0].date()} ~ {df.index[-1].date()})")
+    
     return df
 
 
-def fetch_index_data(data_path, start_date="2000-01-01"):
-    """下載市場指數資料 (TWII 使用本地 CSV)"""
+def fetch_index_data(data_path, start_date="2000-01-01", end_date=None):
+    """
+    下載市場指數資料 (TWII 使用本地 CSV)
+    
+    Args:
+        data_path: 資料儲存路徑
+        start_date: 資料起始日期 (YYYY-MM-DD)
+        end_date: 資料結束日期 (YYYY-MM-DD)，若為 None 則取到最新
+                  [重要] 預訓練時應傳入 SPLIT_DATE 以避免資料洩漏
+    """
     # TWII 以外的國際指數
     foreign_indices = ["^GSPC", "^IXIC", "^SOX", "^DJI"]
     
     print(f"=" * 60)
     print(f"📥 下載/載入 市場指數資料")
+    if end_date:
+        print(f"   (資料範圍: {start_date} ~ {end_date}，防止資料洩漏)")
     print(f"=" * 60)
     
     clean_data = {}
     
-    # 1. 載入本地 TWII
+    # 1. 載入本地 TWII (傳入 end_date)
     try:
-        clean_data["^TWII"] = _load_local_twii_data(start_date)
+        clean_data["^TWII"] = _load_local_twii_data(start_date, end_date)
     except Exception as e:
         print(f"  ❌ ^TWII Loading Failed: {e}")
         
-    # 2. 下載國際指數
+    # 2. 下載國際指數 (若有 end_date，則限制下載範圍)
     if foreign_indices:
         print(f"[下載] 正在獲取國際指數: {', '.join(foreign_indices)}...")
-        data = yf.download(foreign_indices, start=start_date, group_by='ticker', 
-                           auto_adjust=True, threads=True, progress=False)
+        download_end = end_date if end_date else None
+        data = yf.download(foreign_indices, start=start_date, end=download_end,
+                           group_by='ticker', auto_adjust=True, threads=True, progress=False)
         
         for t in foreign_indices:
             try:

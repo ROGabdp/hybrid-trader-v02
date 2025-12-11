@@ -25,7 +25,7 @@ if sys.platform == 'win32':
 # 設定
 # =============================================================================
 TRAIN_START = "2000-01-01"
-TRAIN_END = "2023-12-31"
+TRAIN_END = "2022-12-31"
 
 PROJECT_PATH = Path(__file__).parent
 CACHE_DIR = PROJECT_PATH / "data" / "processed"

@@ -107,7 +107,7 @@ def run_pretraining():
     
     # 準備訓練資料 (使用正確的 API)
     print("\n[Data] 下載全球指數資料...")
-    raw_data = hybrid.fetch_index_data(DATA_PATH, start_date="2000-01-01")
+    raw_data = hybrid.fetch_index_data(DATA_PATH, start_date="2000-01-01", end_date=SPLIT_DATE)
     
     print("\n[Data] 計算特徵 (使用新的 30 次 MC Dropout 採樣)...")
     train_data = {}
@@ -196,19 +196,7 @@ def print_next_steps():
    {V3_MODELS_PATH}/ppo_buy_twii_final.zip
    {V3_MODELS_PATH}/ppo_sell_twii_final.zip
 
-📝 後續步驟:
-   若要讓 daily_ops_dual.py 使用 v3 模型，請編輯該檔案：
-   
-   # 將
-   STRATEGY_A_PATH = os.path.join(PROJECT_PATH, "models_hybrid")
-   
-   # 改為
-   STRATEGY_A_PATH = os.path.join(PROJECT_PATH, "models_hybrid_v3")
-
-💡 或者，您可以保留雙策略設定：
-   - 策略 A (Aggressive): models_hybrid (ROI 85%, 20萬步)
-   - 策略 B (Conservative): models_hybrid_v2_conservative (MDD -6%, 200萬步)  
-   - 新增策略 C (V3): models_hybrid_v3 (新信心度邏輯)
+� daily_ops_dual.py 已預設使用 V3 和 V4 模型進行雙策略推論
 """)
 
 

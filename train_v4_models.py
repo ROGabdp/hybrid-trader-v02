@@ -89,7 +89,7 @@ def run_pretraining():
     hybrid.load_best_lstm_models()
     
     print("\n[Data] Downloading global index data...")
-    raw_data = hybrid.fetch_index_data(DATA_PATH, start_date="2000-01-01")
+    raw_data = hybrid.fetch_index_data(DATA_PATH, start_date="2000-01-01", end_date=SPLIT_DATE)
     
     print("\n[Data] Computing features (30x MC Dropout)...")
     train_data = {}
@@ -159,17 +159,18 @@ def run_finetuning():
 
 def print_next_steps():
     print("\n" + "=" * 60)
-    print("V4 Training Complete!")
+    print("✅ V4 模型訓練流程已完成！")
     print("=" * 60)
     print(f"""
-Model Location:
+📁 模型儲存位置:
    {V4_MODELS_PATH}/ppo_buy_twii_final.zip
    {V4_MODELS_PATH}/ppo_sell_twii_final.zip
 
-V4 Features (標準版):
-   - Buy Fine-tune: 1,000,000 steps (完整訓練)
-   - Sell Fine-tune: 300,000 steps (完整訓練)
-   - 針對 ^TWII 進行深度微調
+📊 V4 特點 (標準完整版):
+   - Buy Fine-tune: 1,000,000 steps
+   - Sell Fine-tune: 300,000 steps
+
+💡 daily_ops_dual.py 已預設使用 V3 和 V4 模型進行雙策略推論
 """)
 
 

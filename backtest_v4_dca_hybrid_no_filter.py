@@ -50,7 +50,7 @@ V4_MODELS_PATH = os.path.join(PROJECT_PATH, 'models_hybrid_v4')
 RESULTS_PATH = os.path.join(PROJECT_PATH, 'results_backtest_v4_dca_hybrid_no_filter')
 CACHE_DIR = os.path.join(PROJECT_PATH, 'data', 'processed')
 
-DEFAULT_START_DATE = '2024-01-01'  # 預設回測起始日
+DEFAULT_START_DATE = '2023-01-01'  # 預設回測起始日
 DEFAULT_END_DATE = None
 YEARLY_CAPITAL = 600_000  # 每年新增資金
 MONTHLY_DCA_BENCHMARK = 50_000  # 純定期定額基準：每月 5 萬
@@ -63,7 +63,7 @@ def parse_args():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog='''
 使用範例:
-  python backtest_v4_dca_hybrid_no_filter.py                           # 使用預設日期 (2024-01-01 至今)
+  python backtest_v4_dca_hybrid_no_filter.py                           # 使用預設日期 (2023-01-01 至今)
   python backtest_v4_dca_hybrid_no_filter.py --start 2020-01-01        # 從 2020-01-01 開始回測
   python backtest_v4_dca_hybrid_no_filter.py --start 2020-01-01 --end 2023-12-31
         '''
