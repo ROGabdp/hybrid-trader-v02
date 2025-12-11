@@ -33,5 +33,13 @@ cache/
 # data/raw/
 # If raw data is large, ignore it. But twii...csv is 300KB.
 
-# Checkpoints
-saved_models_*/
+# Checkpoints - 保留重要的模型和結果資料夾
+# saved_models_*/ (已移除，以下資料夾需要備份)
+!models_hybrid_v3/
+!models_hybrid_v4/
+!saved_models_multivariate/
+!saved_models_5d/
+!tensorboard_logs_v3/
+!tensorboard_logs_v4/
+!results_hybrid_v3/
+!results_hybrid_v4/
