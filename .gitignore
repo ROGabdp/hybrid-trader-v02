@@ -15,6 +15,7 @@ env/
 daily_runs/
 daily_runs_v*_*/
 daily_runs_*/
+intraday_runs/
 tensorboard_logs/
 logs/
 .gemini/
