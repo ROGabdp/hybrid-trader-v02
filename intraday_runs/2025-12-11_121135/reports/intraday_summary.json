@@ -1,0 +1,44 @@
+{
+  "date": "2025-12-11",
+  "generated_at": "2025-12-11T12:12:43.878208",
+  "type": "intraday_with_training",
+  "workspace": "D:\\000-github-repositories\\hybrid-trader-v02\\intraday_runs\\2025-12-11_121135",
+  "filter_status": true,
+  "market": {
+    "open": 28385.23046875,
+    "high": 28568.01953125,
+    "low": 28023.490234375,
+    "close": 28057.0390625,
+    "volume_estimated": 4654.376
+  },
+  "lstm": {
+    "pred_1d": 0.011659284476572697,
+    "pred_5d": -0.016571710363458815,
+    "conf_5d": 0.7711057662963867
+  },
+  "strategies": {
+    "A": {
+      "name": "V3 (Lightweight 200K)",
+      "buy_signal": "BUY",
+      "buy_prob": 0.9999715089797974,
+      "ai_action": "BUY",
+      "sell_scenarios": {
+        "cost": "HOLD",
+        "profit": "HOLD",
+        "loss": "HOLD"
+      }
+    },
+    "B": {
+      "name": "V4 (Standard 1M)",
+      "buy_signal": "WAIT",
+      "buy_prob": 0.999998927116394,
+      "ai_action": "WAIT",
+      "sell_scenarios": {
+        "cost": "HOLD",
+        "profit": "HOLD",
+        "loss": "HOLD"
+      }
+    }
+  },
+  "advice": "⚠️ 僅 V3 買進 (V3 Only)"
+}
