@@ -193,7 +193,7 @@ python backtest_v4_no_filter.py  # V4 無濾網回測
 
 **使用範例：**
 ```bash
-# 預設日期 (2024-01-01 至今)
+# 預設日期 (2023-01-01 至今)
 python backtest_v4_no_filter.py
 
 # 自訂開始日期
@@ -267,6 +267,39 @@ results_backtest_v4_dca_hybrid_no_filter/
 ### Phase 4: 微調與回測 (Fine-tuning & Backtesting)
 - 微調：針對 ^TWII (2000-2022) 進行訓練，Learning Rate = 1e-5
 - 回測：驗證數據集 (2023-Present)
+
+### ⚠️ 資料紀律 (Data Discipline)
+
+> [!IMPORTANT]
+> **防止資料洩漏 (Data Leakage Prevention)**
+> 
+> 本系統採用嚴格的時間切分策略，確保模型在訓練時不會看到驗證期的資料。
+
+| 階段 | 資料範圍 | 說明 |
+|------|----------|------|
+| **LSTM 訓練** | 2000-01-01 ~ 2022-12-31 | 使用 `train_lstm_models.py` 設定的 `TRAIN_END` |
+| **RL 預訓練** | 2000-01-01 ~ 2022-12-31 | 全球指數 (^TWII, ^GSPC, ^IXIC, ^SOX, ^DJI) 截止於 `SPLIT_DATE` |
+| **RL 微調** | ^TWII < 2023-01-01 | 只用 `SPLIT_DATE` 之前的 TWII 資料 |
+| **RL 驗證/回測** | ^TWII >= 2023-01-01 | 模型完全沒見過的資料 |
+
+**關鍵設定 (2025-12-11 更新)：**
+```python
+# train_lstm_models.py
+TRAIN_END = "2022-12-31"
+
+# train_v3_models.py / train_v4_models.py
+SPLIT_DATE = '2023-01-01'
+raw_data = hybrid.fetch_index_data(DATA_PATH, start_date="2000-01-01", end_date=SPLIT_DATE)
+```
+
+**時間線視覺化：**
+```
+LSTM 訓練期:      2000 ─────────────────────── 2022-12-31
+RL 訓練/微調期:   2000 ─────────────────────── 2022-12-31
+                                                     │
+RL 驗證/回測期:                                2023-01-01 ─────── 今天
+                                               (模型未見過)
+```
 
 ### Phase 5: 訓練監控 (Training Monitoring)
 本系統整合了 **TensorBoard** 進行訓練過程的即時監控。
